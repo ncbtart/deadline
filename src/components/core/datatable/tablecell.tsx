@@ -10,7 +10,7 @@ interface TableCellProps {
 
 import cx from "classnames";
 
-export function TableCell({
+export default function TableCell({
   children,
   className,
   align,

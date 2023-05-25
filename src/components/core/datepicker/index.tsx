@@ -11,6 +11,7 @@ import {
   CalendarIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
+
 import { FieldButton } from "./button";
 import { Popover } from "./popover";
 import { Dialog } from "./dialog";
@@ -47,10 +48,11 @@ const DatePicker = (props: AriaDatePickerProps<DateValue>) => {
             "relative flex items-center rounded-l-md border border-gray-300 bg-white p-1 pr-10 transition-colors group-focus-within:border-2 group-focus-within:border-gray-600 group-hover:border-gray-400 group-focus-within:group-hover:border-gray-600",
             {
               "border-2 border-red-500": state.validationState === "invalid",
-            }
+            },
+            { "border-2 border-gray-600": state.isOpen }
           )}
         >
-          <DateField {...fieldProps} />
+          <DateField {...fieldProps} autoFocus={state.isOpen} />
           {state.validationState === "invalid" && (
             <ExclamationTriangleIcon className="absolute right-1 h-6 w-6 text-red-500" />
           )}

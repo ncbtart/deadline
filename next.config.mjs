@@ -18,5 +18,13 @@ const config = {
     locales: ["fr"],
     defaultLocale: "fr",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
+    ],
+  },
 };
 export default config;

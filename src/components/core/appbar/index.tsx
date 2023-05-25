@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Appbar() {
   return (
-    <div className="z-100 fixed inset-x-0 top-0 flex h-16 items-center border-b border-gray-200 bg-white">
+    <div className="z-100 fixed inset-x-0 top-0 flex h-16 items-center border-b border-gray-200 bg-white shadow-lg">
       <div className="relative mx-auto w-full max-w-screen-xl px-6">
         <div className="-mx-6 flex items-center">
           <div className="pl-6 pr-6 lg:w-1/4 lg:pr-8 xl:w-1/5">
@@ -35,7 +35,7 @@ export default function Appbar() {
                 <Image
                   alt="Man"
                   src="/profile.avif"
-                  className="h-10 w-10 rounded-full object-cover"
+                  className="bg-2 h-10 w-10 rounded-full bg-white  object-cover shadow-md"
                   width={40}
                   height={40}
                 />

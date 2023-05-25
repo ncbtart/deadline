@@ -41,14 +41,75 @@ model Session {
     @@index([userId])
 }
 
+enum Typologie {
+    INFRASTRUCTRE
+    RH
+    FINANCE
+    JURIDIQUE
+    COMMUNICATION
+    INFORMATIQUE
+    AUTRE
+}
+
+enum StatusEcheance {
+    A_FAIRE
+    EN_COURS
+    TERMINE
+}
+
+enum Note {
+    NEMO
+    MAIL
+}
+
+model Echeance {
+    id          String         @id @default(cuid())
+    objet       String
+    responsable User           @relation(fields: [userId], references: [id])
+    reference   String         @unique
+    date        DateTime
+    typologie   Typologie
+    echeance    DateTime
+    status      StatusEcheance
+    note        Note
+
+    userId            String
+    echeancePersonnel EcheancePersonnel[]
+
+    @@index([userId])
+}
+
+model Personnel {
+    id       String @id @default(cuid())
+    nom      String
+    prenom   String
+    fonction String
+    email    String
+    image    String
+
+    echeancePersonnel EcheancePersonnel[]
+}
+
+model EcheancePersonnel {
+    id          String    @id @default(cuid())
+    echeance    Echeance  @relation(fields: [echeanceId], references: [id])
+    personnel   Personnel @relation(fields: [personnelId], references: [id])
+    echeanceId  String
+    personnelId String
+
+    @@index([echeanceId])
+    @@index([personnelId])
+}
+
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    echeances     Echeance[]
 }
 
 model VerificationToken {

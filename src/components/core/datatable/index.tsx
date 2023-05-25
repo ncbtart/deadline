@@ -1,10 +1,13 @@
 interface TableProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-export default function Table({ children }: TableProps) {
+import cx from "classnames";
+
+export default function Table({ children, className }: TableProps) {
   return (
-    <div className="overflow-x-auto">
+    <div className={cx("overflow-x-auto", className)}>
       <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:divide-gray-700 dark:bg-gray-900">
         <>{children}</>
       </table>
