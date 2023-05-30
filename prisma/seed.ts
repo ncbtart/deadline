@@ -2,6 +2,7 @@ import { prisma } from "../src/server/db";
 
 async function main() {
   await prisma.echeancePersonnel.deleteMany({});
+  await prisma.personnel.deleteMany({});
   await prisma.echeance.deleteMany({});
   await prisma.user.deleteMany({});
 
@@ -21,7 +22,7 @@ async function main() {
             status: "EN_COURS",
             echeance: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
             reference: "REF-1",
-            typologie: "INFRASTRUCTRE",
+            typologie: "RH",
             objet: "OBJET-1",
             note: "NEMO",
 
@@ -34,7 +35,7 @@ async function main() {
                       email: "cuni.west@localhost",
                       fonction: "Chanteur",
                       prenom: "West",
-                      image: "https://i.pravatar.cc/300",
+                      image: "https://i.pravatar.cc/301",
                     },
                   },
                 },
@@ -45,7 +46,7 @@ async function main() {
                       email: "john.beeroot@localhost",
                       fonction: "Acteur",
                       prenom: "Beeroot",
-                      image: "https://i.pravatar.cc/300",
+                      image: "https://i.pravatar.cc/302",
                     },
                   },
                 },
@@ -57,7 +58,7 @@ async function main() {
             status: "EN_COURS",
             echeance: new Date(Date.now() + 1000 * 60 * 60 * 24 * 4),
             reference: "REF-2",
-            typologie: "INFRASTRUCTRE",
+            typologie: "JURIDIQUE",
             objet: "OBJET-2",
             note: "MAIL",
 
@@ -69,8 +70,8 @@ async function main() {
                       nom: "Sin",
                       email: "michael.sin@localhost",
                       fonction: "Acteur",
-                      prenom: "Michael",
-                      image: "https://i.pravatar.cc/300",
+                      prenom: "Johnny",
+                      image: "https://i.pravatar.cc/303",
                     },
                   },
                 },

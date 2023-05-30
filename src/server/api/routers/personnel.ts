@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
-export const echeanceRouter = createTRPCRouter({
+export const personnelRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.echeance.findMany({ include: { responsable: true } });
+    return ctx.prisma.personnel.findMany();
   }),
 });

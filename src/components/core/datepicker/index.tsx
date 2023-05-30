@@ -42,10 +42,14 @@ const DatePicker = (props: AriaDatePickerProps<DateValue>) => {
       >
         {props.label}
       </span>
-      <div {...groupProps} ref={ref} className="group mt-2 flex">
+      <div
+        {...groupProps}
+        ref={ref}
+        className="group mt-2 flex justify-between"
+      >
         <div
           className={cx(
-            "relative flex items-center rounded-l-md border border-gray-300 bg-white p-1 pr-10 transition-colors group-focus-within:border-2 group-focus-within:border-gray-600 group-hover:border-gray-400 group-focus-within:group-hover:border-gray-600",
+            "relative flex w-full items-center rounded-l-md border border-gray-300 bg-white p-1 pr-10 transition-colors group-focus-within:border-2 group-focus-within:border-gray-600 group-hover:border-gray-400 group-focus-within:group-hover:border-gray-600",
             {
               "border-2 border-red-500": state.validationState === "invalid",
             },

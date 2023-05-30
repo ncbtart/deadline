@@ -3,5 +3,9 @@ interface TableHeadProps {
 }
 
 export default function TableHead({ children }: TableHeadProps) {
-  return <thead className="ltr:text-left rtl:text-right">{children}</thead>;
+  return (
+    <thead className="ltr:text-left rtl:text-right">
+      <tr>{children}</tr>
+    </thead>
+  );
 }

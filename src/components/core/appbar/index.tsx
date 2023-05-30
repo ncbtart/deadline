@@ -40,7 +40,7 @@ export default function Appbar() {
                   height={40}
                 />
 
-                <p className="ms-2 hidden text-left text-xs sm:block">
+                <p className="ms-2 text-left text-xs sm:block">
                   <strong className="block font-medium">Eric Frusciante</strong>
 
                   <span className="text-gray-500"> eric@frusciante.com </span>
@@ -48,7 +48,7 @@ export default function Appbar() {
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="ms-4 hidden h-5 w-5 text-gray-500 transition group-hover:text-gray-700 sm:block"
+                  className="ms-4 h-5 w-5 text-gray-500 transition group-hover:text-gray-700 sm:block"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >

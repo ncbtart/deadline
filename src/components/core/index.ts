@@ -15,3 +15,9 @@ export { default as TableHead } from "./datatable/tablehead";
 export { default as TableBody } from "./datatable/tablebody";
 export { default as TableRow } from "./datatable/tablerow";
 export { default as TableCell } from "./datatable/tablecell";
+
+export { default as Avatar } from "./avatar";
+
+export { default as Progress } from "./progress";
+
+export { default as RadioGroup } from "./radiogroup";

@@ -42,7 +42,7 @@ model Session {
 }
 
 enum Typologie {
-    INFRASTRUCTRE
+    INFRASTRUCTURE
     RH
     FINANCE
     JURIDIQUE

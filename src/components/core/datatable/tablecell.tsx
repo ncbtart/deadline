@@ -21,13 +21,13 @@ export default function TableCell({
   ...props
 }: TableCellProps) {
   const classes = cx(
-    "whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white",
+    "whitespace-nowrap px-4 py-2 dark:text-white",
     {
       "text-left": align === "left",
       "text-center": align === "center",
       "text-right": align === "right",
     },
-    { "text-gray-500 dark:text-gray-800": header },
+    { "text-gray-500 dark:text-gray-800": header, "text-gray-900": !header },
     className
   );
 
