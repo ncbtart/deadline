@@ -4,6 +4,12 @@ import { SessionProvider } from "next-auth/react";
 
 import { api } from "@/utils/api";
 
+import localFont from "next/font/local";
+
+const montserrat = localFont({
+  src: "../../public/fonts/Montserrat-VariableFont_wght.ttf",
+});
+
 import "@/styles/globals.css";
 
 import { I18nProvider, SSRProvider } from "react-aria";
@@ -19,7 +25,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <SSRProvider>
         <I18nProvider locale={locale}>
-          <Component {...pageProps} />
+          <main className={montserrat.className}>
+            <Component {...pageProps} />
+          </main>
         </I18nProvider>
       </SSRProvider>
     </SessionProvider>

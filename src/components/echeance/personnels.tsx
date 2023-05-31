@@ -60,13 +60,13 @@ export default function Personnels({
               <Avatar
                 key={index}
                 name={`${personnel.prenom} ${personnel.nom}`}
-                image={personnel.image as string}
+                image={personnel.image}
                 tooltip
               />
 
               {active === personnel.id && (
                 <button
-                  className="bg absolute bottom-0 right-0 z-50 h-8 w-8 translate-x-1/2 translate-y-1/2 rounded-full bg-white text-pink-800"
+                  className="absolute right-0 top-0 z-50 hidden h-6 w-6 -translate-y-1/3 translate-x-1/2 rounded-full bg-white text-pink-800 group-hover:block"
                   onMouseDown={() => {
                     console.log("remove", personnel);
                     onRemovePersonnel?.(personnel);
@@ -78,7 +78,7 @@ export default function Personnels({
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="h-68 w-8"
+                    className="h-6 w-6"
                   >
                     <path
                       strokeLinecap="round"
@@ -118,10 +118,7 @@ export default function Personnels({
                       onAddPersonnel?.(personnel);
                     }}
                   >
-                    <Avatar
-                      name={personnel.nom}
-                      image={personnel.image as string}
-                    />
+                    <Avatar name={personnel.nom} image={personnel.image} />
                     <p className="ml-4">
                       {personnel.prenom} {personnel.nom}
                     </p>
