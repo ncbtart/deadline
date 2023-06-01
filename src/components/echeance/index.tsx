@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Note, Personnel, Typologie } from "@prisma/client";
+import { Note, type Personnel, Typologie } from "@prisma/client";
 import { useMemo, useState } from "react";
 
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
@@ -64,9 +64,8 @@ export default function EcheanceMain({ echeance }: EcheanceMainProps) {
     resolver: zodResolver(EcheanceSchema),
   });
 
-  const onSubmit: SubmitHandler<EcheanceSchemaType> = (
-    data: EcheanceSchemaType
-  ) => console.log(data);
+  const onSubmit: SubmitHandler<EcheanceSchemaType> = (data) =>
+    console.log(data);
 
   const [personnels, setPersonnels] = useState<Personnel[]>([]);
 

@@ -4,6 +4,7 @@ interface ButtonProps {
   outlined?: boolean;
   rounded?: boolean;
   type?: "button" | "submit" | "reset";
+  onClick?: () => void;
 }
 
 import cx from "classnames";
@@ -14,10 +15,12 @@ export default function Button({
   rounded = false,
   type = "button",
   className,
+  onClick,
 }: ButtonProps) {
   return (
     <button
       type={type}
+      onClick={onClick}
       className={cx(
         "rounded px-8 py-2 text-sm font-medium  transition hover:scale-105 hover:shadow-md focus:outline-none focus:ring",
         {

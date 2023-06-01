@@ -54,7 +54,7 @@ function DateSegment({ segment, state }: DateSegmentProps) {
         ...segmentProps.style,
       }}
       className={cx(
-        "group box-content rounded-sm px-0.5 text-right tabular-nums outline-none focus:bg-pink-600 focus:text-white",
+        "group box-content rounded-sm px-0.5 text-right outline-none focus:bg-pink-600 focus:text-white",
         {
           "text-gray-500": !segment.isEditable,
           "text-gray-800": segment.isEditable,

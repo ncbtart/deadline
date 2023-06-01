@@ -2,7 +2,7 @@ import Head from "next/head";
 // import { signIn, signOut, useSession } from "next-auth/react";
 
 // import { api } from "@/utils/api";
-import LoggedLayout from "@/components/layout/template";
+import LoggedLayout from "@/components/layout/private";
 import EcheanceMain from "@/components/echeance";
 
 const NouvelleEcheance = () => {

@@ -13,8 +13,9 @@ async function main() {
     update: {},
     create: {
       email: "johnny.deep@localhost",
-      name: "Johnny Deep",
       image: "https://i.pravatar.cc/300",
+      firstname: "Johnny",
+      lastname: "Deep",
       echeances: {
         create: [
           {

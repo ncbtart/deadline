@@ -1,8 +1,7 @@
 import Head from "next/head";
-// import { signIn, signOut, useSession } from "next-auth/react";
 
 import { Button, Card } from "@/components/core";
-import LoggedLayout from "@/components/layout/template";
+import LoggedLayout from "@/components/layout/private";
 import TableDashboard from "@/components/dashboard";
 import { api } from "@/utils/api";
 
@@ -10,13 +9,18 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { appRouter } from "@/server/api/root";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 import { prisma } from "@/server/db";
 import SuperJSON from "superjson";
 
 const Home = () => {
   const { data: echeances, status } = api.echeance.getAll.useQuery();
+
+  const session = useSession();
+
+  console.log(session);
+
   return (
     <>
       <Head>
@@ -64,10 +68,10 @@ const Home = () => {
                   </h5>
                   {status === "loading" ? (
                     <div className="mt-6 flex items-center justify-center">
-                      <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-pink-900"></div>
+                      <div className="h-10 w-10 animate-spin rounded-full border-pink-600"></div>
                     </div>
                   ) : (
-                    <TableDashboard className="mb-4 mt-6" data={echeances} />
+                    <TableDashboard className="mt-6" data={echeances} />
                   )}
                 </div>
               </Card>

@@ -11,6 +11,7 @@ import { prisma } from "@/server/db";
 import Credentials from "next-auth/providers/credentials";
 
 import argon2 from "argon2";
+import { omit } from "lodash";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -39,15 +40,6 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
-  },
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
@@ -61,21 +53,30 @@ export const authOptions: NextAuthOptions = {
             where: {
               email: credentials.email,
             },
+            select: {
+              id: true,
+              firstname: true,
+              lastname: true,
+              email: true,
+              password: true,
+            },
           });
+
           if (
             user &&
             (await argon2.verify(user.password as string, credentials.password))
           ) {
-            // L'authentification réussie
-            return Promise.resolve(user);
+            return Promise.resolve(omit(user, ["password"]));
           } else {
             // L'authentification a échoué
-            return null;
+            return Promise.resolve(null);
           }
         }
-        return null;
+        return Promise.resolve(null);
       },
     }),
+    // The URL to redirect to when authentication is successful.
+
     /**
      *
      * ...add more providers here.
@@ -87,6 +88,10 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    signIn: "/auth/signin",
+  },
+  session: { strategy: "jwt" },
 };
 
 /**

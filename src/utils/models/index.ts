@@ -14,7 +14,8 @@ export interface Echeance {
 
 export interface User {
   id: string;
-  name: string | null;
+  firstname: string | null;
+  lastname: string | null;
   email: string | null;
   image: string | null;
 }

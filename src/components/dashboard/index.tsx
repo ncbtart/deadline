@@ -42,7 +42,9 @@ export default function TableDashboard({
             <TableCell>
               <Avatar
                 tooltip
-                name={item.responsable.name}
+                name={`${item.responsable.firstname as string} ${
+                  item.responsable.lastname as string
+                }`}
                 image={item.responsable.image}
               />
             </TableCell>
