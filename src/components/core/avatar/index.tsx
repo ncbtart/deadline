@@ -1,8 +1,8 @@
 import Image from "next/image";
 
 interface AvatarProps {
-  name: string | null;
-  image: string | null;
+  name?: string | null;
+  image?: string | null;
   tooltip?: boolean;
   className?: string;
 }
@@ -17,7 +17,7 @@ export default function Avatar({
 }: AvatarProps) {
   return (
     <div className="group relative flex">
-      {image && (
+      {image ? (
         <Image
           alt={`img ${name ?? "responsable"}`}
           src={image}
@@ -28,6 +28,10 @@ export default function Avatar({
           width={40}
           height={40}
         />
+      ) : (
+        <div className="bg-2 m-auto flex h-10 w-10 items-center justify-center rounded-full bg-rose-500 object-cover shadow-md ">
+          <span className="font-bold text-white">{name && name[0]}</span>
+        </div>
       )}
       {tooltip && (
         <span

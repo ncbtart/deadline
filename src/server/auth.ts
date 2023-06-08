@@ -11,7 +11,6 @@ import { prisma } from "@/server/db";
 import Credentials from "next-auth/providers/credentials";
 
 import argon2 from "argon2";
-import { omit } from "lodash";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -34,6 +33,14 @@ declare module "next-auth" {
   // }
 }
 
+declare module "next-auth/jwt" {
+  /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
+  interface JWT {
+    /** OpenID ID Token */
+    id: string;
+  }
+}
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -53,20 +60,13 @@ export const authOptions: NextAuthOptions = {
             where: {
               email: credentials.email,
             },
-            select: {
-              id: true,
-              firstname: true,
-              lastname: true,
-              email: true,
-              password: true,
-            },
           });
 
           if (
             user &&
             (await argon2.verify(user.password as string, credentials.password))
           ) {
-            return Promise.resolve(omit(user, ["password"]));
+            return Promise.resolve(user);
           } else {
             // L'authentification a échoué
             return Promise.resolve(null);
@@ -90,8 +90,21 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/auth/signin",
+    signOut: "/auth/signin",
   },
-  session: { strategy: "jwt" },
+  callbacks: {
+    session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 3 * 60 * 60,
+  },
 };
 
 /**

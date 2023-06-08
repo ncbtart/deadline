@@ -30,7 +30,7 @@ type SignUpchemaSchemaType = z.infer<typeof SignUpchema>;
 const SignUp = () => {
   const router = useRouter();
 
-  const mutation = api.auth.signup.useMutation({
+  const authMutation = api.auth.signup.useMutation({
     onSuccess: async (data) => {
       console.log("try to sign in");
       await signIn("credentials", {
@@ -39,14 +39,25 @@ const SignUp = () => {
         callbackUrl: "/",
       });
     },
+    onError: (error) => {
+      setError("email", {
+        type: "manual",
+        message: error.message,
+      });
+    },
   });
 
-  const { control, handleSubmit } = useForm<SignUpchemaSchemaType>({
+  const { control, handleSubmit, setError } = useForm<SignUpchemaSchemaType>({
     resolver: zodResolver(SignUpchema),
   });
 
   const onSubmit: SubmitHandler<SignUpchemaSchemaType> = (data) => {
-    mutation.mutate(data);
+    const { firstname, lastname, ...form } = data;
+
+    authMutation.mutate({
+      ...form,
+      name: `${firstname} ${lastname}`,
+    });
   };
 
   return (

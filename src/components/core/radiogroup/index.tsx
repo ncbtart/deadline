@@ -4,6 +4,7 @@ interface RadioGroupProps {
   options: RadioOption[];
   onChange: (val: string) => void;
   value: string;
+  error?: string;
 }
 
 interface RadioOption {
@@ -20,6 +21,7 @@ const RadioGroup = ({
   options,
   onChange,
   value,
+  error,
 }: RadioGroupProps) => {
   return (
     <fieldset className={cx("flex flex-wrap gap-3", classNames)}>
@@ -61,6 +63,11 @@ const RadioGroup = ({
           </div>
         ))}
       </>
+      {error && (
+        <span className="ml-1 mt-1 flex items-center text-xs font-medium tracking-wide text-red-500">
+          {error}
+        </span>
+      )}
     </fieldset>
   );
 };

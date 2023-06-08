@@ -21,3 +21,5 @@ export { default as Avatar } from "./avatar";
 export { default as Progress } from "./progress";
 
 export { default as RadioGroup } from "./radiogroup";
+
+export { default as MenuItem } from "./menu/menuitem";

@@ -63,14 +63,14 @@ enum Note {
 }
 
 model Echeance {
-    id          String         @id @default(cuid())
+    id          String          @id @default(cuid())
     objet       String
-    responsable User           @relation(fields: [userId], references: [id])
-    reference   String         @unique
+    responsable User            @relation(fields: [userId], references: [id])
+    reference   String          @unique
     date        DateTime
     typologie   Typologie
     echeance    DateTime
-    status      StatusEcheance
+    status      StatusEcheance? @default(A_FAIRE)
     note        Note
 
     userId            String
@@ -103,8 +103,7 @@ model EcheancePersonnel {
 
 model User {
     id            String     @id @default(cuid())
-    firstname     String?
-    lastname      String?
+    name          String?
     password      String?
     email         String?    @unique
     emailVerified DateTime?

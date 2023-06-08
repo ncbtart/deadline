@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 import { z } from "zod";
-import Users from "../models/users";
+import Users from "@/server/api/models/users";
 
 export const authRouter = createTRPCRouter({
   signup: publicProcedure
@@ -9,8 +9,7 @@ export const authRouter = createTRPCRouter({
       z
         .object({
           email: z.string().email("This is not a valid email."),
-          firstname: z.string(),
-          lastname: z.string(),
+          name: z.string(),
           password: z.string().min(8, {
             message: "Password must be at least 8 characters long.",
           }),

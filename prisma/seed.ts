@@ -14,8 +14,7 @@ async function main() {
     create: {
       email: "johnny.deep@localhost",
       image: "https://i.pravatar.cc/300",
-      firstname: "Johnny",
-      lastname: "Deep",
+      name: "Johnny Deep",
       echeances: {
         create: [
           {
@@ -32,7 +31,7 @@ async function main() {
                 {
                   personnel: {
                     create: {
-                      nom: "Cuni",
+                      nom: "Cuni West",
                       email: "cuni.west@localhost",
                       fonction: "Chanteur",
                       prenom: "West",

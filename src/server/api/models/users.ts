@@ -4,8 +4,7 @@ import argon2 from "argon2";
 
 type Signup = {
   email: string;
-  firstname: string;
-  lastname: string;
+  name: string;
   password: string;
   passwordConfirmation: string;
 };
@@ -25,8 +24,7 @@ export default function Users(prismaUser: PrismaClient["user"]) {
 
       return await prismaUser.create({
         data: {
-          firstname: data.firstname,
-          lastname: data.lastname,
+          name: data.name,
           email: data.email,
           password: hashedPassword,
         },

@@ -21,7 +21,11 @@ import cx from "classnames";
 
 import DateField from "./datefield";
 
-const DatePicker = (props: AriaDatePickerProps<DateValue>) => {
+interface DatePickerProps extends AriaDatePickerProps<DateValue> {
+  error?: string;
+}
+
+const DatePicker = (props: DatePickerProps) => {
   const state = useDatePickerState(props);
   const ref = useRef(null);
 
@@ -65,6 +69,13 @@ const DatePicker = (props: AriaDatePickerProps<DateValue>) => {
           <CalendarIcon className="h-5 w-5 text-gray-700 group-focus-within:text-gray-700" />
         </FieldButton>
       </div>
+
+      {props.error && (
+        <span className="ml-1 mt-1 flex items-center text-xs font-medium tracking-wide text-red-500">
+          {props.error}
+        </span>
+      )}
+
       {state.isOpen && (
         <Popover triggerRef={ref} state={state} placement="bottom start">
           <Dialog {...dialogProps}>

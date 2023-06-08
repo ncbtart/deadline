@@ -3,7 +3,7 @@ import Head from "next/head";
 
 // import { api } from "@/utils/api";
 import LoggedLayout from "@/components/layout/private";
-import EcheanceMain from "@/components/echeance";
+import EcheanceCreate from "@/components/echeance/create";
 
 const NouvelleEcheance = () => {
   return (
@@ -16,7 +16,7 @@ const NouvelleEcheance = () => {
       <LoggedLayout>
         <div className="flex min-h-screen flex-col content-center items-center justify-center ">
           <div className="container hidden sm:flex sm:flex-row">
-            <EcheanceMain />
+            <EcheanceCreate title="Nouvelle échéance" />
           </div>
         </div>
       </LoggedLayout>

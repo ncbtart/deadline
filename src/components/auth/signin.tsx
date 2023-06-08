@@ -3,12 +3,11 @@ import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Button, Textfield } from "@/components/core";
 import Image from "next/image";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const SignInSchema = z.object({
   email: z.string().email({ message: "Ce champ doit être un email" }),
@@ -18,28 +17,25 @@ const SignInSchema = z.object({
 type SignInSchemaType = z.infer<typeof SignInSchema>;
 
 const SignIn = () => {
-  const { status } = useSession();
-
   const router = useRouter();
 
-  const { control, handleSubmit } = useForm<SignInSchemaType>({
+  const { control, handleSubmit, setError } = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
   });
-
-  useEffect(() => {
-    async function checkSession() {
-      if (status === "authenticated") {
-        await router.push("/");
-      }
-    }
-    void checkSession();
-  }, [status, router]);
 
   const onSubmit: SubmitHandler<SignInSchemaType> = async (data) => {
     await signIn("credentials", {
       email: data.email,
       password: data.password,
-      callbackUrl: router.query.callbackUrl as string,
+      redirect: false,
+    }).then(async (res) => {
+      if (res?.ok) {
+        await router.push((router.query.callbackUrl as string) || "/");
+      } else {
+        setError("password", {
+          message: "Email ou mot de passe incorrect",
+        });
+      }
     });
   };
 

@@ -8,7 +8,9 @@ export default function LoggedLayout({ children }: LoggedLayoutProps) {
   return (
     <>
       <Appbar />
-      <main className="min-h-screen w-screen bg-gray-100">{children}</main>
+      <main className="relative min-h-screen w-screen bg-gray-100">
+        {children}
+      </main>
     </>
   );
 }
