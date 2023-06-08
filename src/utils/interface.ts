@@ -2,17 +2,19 @@ import {
   type Echeance,
   type User,
   type EcheancePersonnel,
-  type Personnel,
 } from "@prisma/client";
 
 export type EcheancheWithResponsable = Echeance & {
-  responsable: User;
+  responsable: UserWithoutPassword;
 };
 
 export type EcheancePersonnelWithPersonnel = EcheancePersonnel & {
-  personnel: Personnel;
+  personnel: UserWithoutPassword;
 };
 
 export type EcheancheWithPersonnel = Echeance & {
+  responsable: UserWithoutPassword;
   echeancePersonnel: EcheancePersonnelWithPersonnel[];
 };
+
+export type UserWithoutPassword = Omit<User, "password" | "emailVerified">;

@@ -7,7 +7,7 @@ import {
   parseAbsolute,
 } from "@internationalized/date";
 
-import { Note, type Personnel, Typologie } from "@prisma/client";
+import { Note, Typologie } from "@prisma/client";
 import { useEffect, useMemo, useState } from "react";
 
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
@@ -26,7 +26,10 @@ import { RadioGroup } from "@/components/core";
 import { type DateValue } from "react-aria";
 import Personnels from "./personnels";
 import { useRouter } from "next/router";
-import { type EcheancheWithPersonnel } from "@/utils/interface";
+import {
+  type UserWithoutPassword,
+  type EcheancheWithPersonnel,
+} from "@/utils/interface";
 import { api } from "@/utils/api";
 
 const EcheanceSchemaUpdate = z
@@ -82,7 +85,7 @@ export default function EcheanceUpdate({ echeance, title }: EcheanceMainProps) {
     }
   );
 
-  const [personnels, setPersonnels] = useState<Personnel[]>([]);
+  const [personnels, setPersonnels] = useState<UserWithoutPassword[]>([]);
 
   useEffect(() => {
     if (echeance) {
@@ -99,6 +102,7 @@ export default function EcheanceUpdate({ echeance, title }: EcheanceMainProps) {
   const updateMutation = api.echeance.updateEcheance.useMutation({
     onSuccess: async () => {
       await utils.echeance.findAll.invalidate();
+      await utils.echeance.findById.invalidate({ id: echeance?.id });
       await router.push("/");
     },
     onError: (error) => {
@@ -256,6 +260,7 @@ export default function EcheanceUpdate({ echeance, title }: EcheanceMainProps) {
             />
             <Personnels
               personnels={personnels}
+              responsableId={echeance?.responsable.id}
               onAddPersonnel={(personnel) => {
                 if (personnels.find((p) => p.id === personnel.id)) return;
                 setPersonnels([...personnels, personnel]);
@@ -276,7 +281,7 @@ export default function EcheanceUpdate({ echeance, title }: EcheanceMainProps) {
 
 interface EchanceTermineProps {
   echeance?: EcheancheWithPersonnel | null;
-  personnels: Personnel[];
+  personnels: UserWithoutPassword[];
 }
 
 function EchanceTermine({ echeance, personnels }: EchanceTermineProps) {
@@ -373,6 +378,7 @@ function EchanceTermine({ echeance, personnels }: EchanceTermineProps) {
           />
 
           <Personnels
+            responsableId={echeance?.responsable.id}
             personnels={personnels}
             disabled
             onAddPersonnel={() => {

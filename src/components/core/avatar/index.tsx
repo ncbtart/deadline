@@ -29,8 +29,8 @@ export default function Avatar({
           height={40}
         />
       ) : (
-        <div className="bg-2 m-auto flex h-10 w-10 items-center justify-center rounded-full bg-rose-500 object-cover shadow-md ">
-          <span className="font-bold text-white">{name && name[0]}</span>
+        <div className="m-auto flex h-10 w-10  items-center justify-center rounded-full bg-rose-500 shadow-md">
+          <div className="font-bold text-white">{name?.[0]}</div>
         </div>
       )}
       {tooltip && (

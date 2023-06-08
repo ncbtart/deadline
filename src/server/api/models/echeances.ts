@@ -101,19 +101,12 @@ export default function Echeances(prismaEcheance: PrismaClient["echeance"]) {
           objet: data.objet,
           echeance: data.echeance,
           note: data.note,
-          responsable: {
-            connect: {
-              id: data.responsableId,
-            },
-          },
           echeancePersonnel: {
             deleteMany: {},
             createMany: {
-              data: data.personnelsId.map((id) => {
-                return {
-                  personnelId: id,
-                };
-              }),
+              data: data.personnelsId.map((personnelId) => ({
+                personnelId,
+              })),
             },
           },
         },

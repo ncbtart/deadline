@@ -6,7 +6,18 @@ import Echeances from "@/server/api/models/echeances";
 
 export const echeanceRouter = createTRPCRouter({
   findAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.echeance.findMany({ include: { responsable: true } });
+    return ctx.prisma.echeance.findMany({
+      include: {
+        responsable: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+    });
   }),
   findById: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -18,15 +29,30 @@ export const echeanceRouter = createTRPCRouter({
           id: input.id,
         },
         include: {
-          responsable: false,
+          responsable: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
           echeancePersonnel: {
             include: {
-              personnel: true,
+              personnel: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
             },
           },
         },
       });
     }),
+
   createEcheance: protectedProcedure
     .input(
       z.object({

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { today, getLocalTimeZone } from "@internationalized/date";
 
-import { Note, type Personnel, Typologie } from "@prisma/client";
+import { Note, Typologie } from "@prisma/client";
 import { useMemo, useState } from "react";
 
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
@@ -23,6 +23,8 @@ import { type DateValue } from "react-aria";
 import Personnels from "./personnels";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
+import { type UserWithoutPassword } from "@/utils/interface";
+import { useSession } from "next-auth/react";
 
 const EcheanceSchemaCreate = z
   .object({
@@ -60,6 +62,8 @@ interface EcheanceMainProps {
 export default function EcheanceCreate({ title }: EcheanceMainProps) {
   const router = useRouter();
 
+  const { data: user } = useSession();
+
   const notes = useMemo(() => {
     return Object.keys(Note).map((key) => ({
       value: key,
@@ -81,7 +85,7 @@ export default function EcheanceCreate({ title }: EcheanceMainProps) {
     }
   );
 
-  const [personnels, setPersonnels] = useState<Personnel[]>([]);
+  const [personnels, setPersonnels] = useState<UserWithoutPassword[]>([]);
 
   const utils = api.useContext();
 
@@ -218,6 +222,7 @@ export default function EcheanceCreate({ title }: EcheanceMainProps) {
             />
             <Personnels
               personnels={personnels}
+              responsableId={user?.user.id}
               onAddPersonnel={(personnel) => {
                 if (personnels.find((p) => p.id === personnel.id)) return;
                 setPersonnels([...personnels, personnel]);

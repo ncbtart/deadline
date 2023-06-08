@@ -9,9 +9,14 @@ import { useRouter } from "next/router";
 const ModifEcheance = () => {
   const router = useRouter();
 
-  const { data: echeance, status } = api.echeance.findById.useQuery({
-    id: router.query.id as string,
-  });
+  const { data: echeance, status } = api.echeance.findById.useQuery(
+    {
+      id: router.query.id as string,
+    },
+    {
+      enabled: !!router.query.id,
+    }
+  );
 
   return (
     <>
