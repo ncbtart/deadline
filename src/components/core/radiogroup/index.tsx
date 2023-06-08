@@ -2,9 +2,10 @@ interface RadioGroupProps {
   classNames?: string;
   name: string;
   options: RadioOption[];
-  onChange: (val: string) => void;
+  onChange?: (val: string) => void;
   value: string;
   error?: string;
+  disabled?: boolean;
 }
 
 interface RadioOption {
@@ -22,6 +23,7 @@ const RadioGroup = ({
   onChange,
   value,
   error,
+  disabled = false,
 }: RadioGroupProps) => {
   return (
     <fieldset className={cx("flex flex-wrap gap-3", classNames)}>
@@ -37,7 +39,9 @@ const RadioGroup = ({
               className="peer hidden [&:checked_+_label_svg]:block"
               checked={value === option.value}
               onChange={(event) => {
-                onChange((event.target as HTMLInputElement).value);
+                if (disabled) return;
+                if (onChange)
+                  onChange((event.target as HTMLInputElement).value);
               }}
             />
 

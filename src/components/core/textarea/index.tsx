@@ -8,10 +8,24 @@ interface TextAreaProps {
   placeholder?: string;
   error?: string;
   rows: number;
+  value: string;
+  disabled?: boolean;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ label, name, placeholder = "", rows, error, ...props }, ref) => (
+  (
+    {
+      label,
+      name,
+      placeholder = "",
+      rows,
+      error,
+      value,
+      disabled = false,
+      ...props
+    },
+    ref
+  ) => (
     <div>
       {label && (
         <label
@@ -29,6 +43,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           name={name}
           rows={rows}
+          value={value}
+          disabled={disabled}
           id={name}
           {...props}
           className={cx(

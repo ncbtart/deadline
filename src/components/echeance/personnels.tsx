@@ -8,6 +8,7 @@ interface PersonnelsPannelProps {
   personnels?: Personnel[];
   onAddPersonnel?: (personnel: Personnel) => void;
   onRemovePersonnel?: (personnel: Personnel) => void;
+  disabled?: boolean;
 }
 
 import cx from "classnames";
@@ -21,6 +22,7 @@ export default function Personnels({
   personnels = [],
   onAddPersonnel,
   onRemovePersonnel,
+  disabled = false,
 }: PersonnelsPannelProps) {
   const [referenceElement, setReferenceElement] =
     useState<HTMLButtonElement | null>(null);
@@ -64,10 +66,11 @@ export default function Personnels({
                 tooltip
               />
 
-              {active === personnel.id && (
+              {!disabled && active === personnel.id && (
                 <button
                   className="absolute right-0 top-0 z-50 hidden h-6 w-6 -translate-y-1/3 translate-x-1/2 rounded-full bg-white text-pink-800 group-hover:block"
                   onMouseDown={() => {
+                    if (disabled) return;
                     console.log("remove", personnel);
                     onRemovePersonnel?.(personnel);
                   }}
@@ -94,6 +97,7 @@ export default function Personnels({
             <Popover.Button
               ref={setReferenceElement}
               className="m-2 inline-flex h-8 w-8 items-center justify-center rounded-full text-pink-500 transition duration-150 ease-in-out hover:text-pink-800"
+              disabled={disabled}
             >
               <span className="sr-only">Ajouter</span>
               <PlusCircleIcon />
@@ -115,6 +119,7 @@ export default function Personnels({
                     key={index}
                     className="flew-row flex w-full items-center rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                     onClick={() => {
+                      if (disabled) return;
                       onAddPersonnel?.(personnel);
                     }}
                   >

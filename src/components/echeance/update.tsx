@@ -119,6 +119,10 @@ export default function EcheanceUpdate({ echeance, title }: EcheanceMainProps) {
     updateMutation.mutate({ id: echeance.id, ...data, personnelsId });
   };
 
+  if (echeance && echeance.echeance < new Date()) {
+    return <EchanceTermine echeance={echeance} personnels={personnels} />;
+  }
+
   return (
     <Card className="invisible sm:visible">
       <div className="container flex flex-col">
@@ -265,6 +269,120 @@ export default function EcheanceUpdate({ echeance, title }: EcheanceMainProps) {
             <Button type="submit">Modifier</Button>
           </div>
         </form>
+      </div>
+    </Card>
+  );
+}
+
+interface EchanceTermineProps {
+  echeance?: EcheancheWithPersonnel | null;
+  personnels: Personnel[];
+}
+
+function EchanceTermine({ echeance, personnels }: EchanceTermineProps) {
+  const notes = useMemo(() => {
+    return Object.keys(Note).map((key) => ({
+      value: key,
+      label: key,
+      name: key,
+    }));
+  }, []);
+
+  const typologies = useMemo(() => {
+    return Object.keys(Typologie).map((key) => ({
+      value: key,
+      label: key.charAt(0) + key.substring(1).toLowerCase(),
+    }));
+  }, []);
+
+  return (
+    <Card className="invisible sm:visible">
+      <div className="container flex flex-col">
+        {/* Dashboard Header */}
+        <div className="flex items-center gap-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-6 w-6 font-bold text-pink-600 sm:h-8 sm:w-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+
+          <h3 className="text-lg font-bold sm:text-xl">
+            Recapitulatif échéance
+          </h3>
+        </div>
+        <div className="ml-4 mr-16 mt-8 grid w-[580px] grid-cols-2 gap-6">
+          <Textfield
+            name="reference"
+            value={echeance?.reference}
+            label="Référence"
+            type="text"
+            disabled
+          />
+          <RadioGroup
+            name="note"
+            classNames="items-end"
+            value={echeance?.note ?? "NEMO"}
+            options={notes}
+            disabled
+          />
+          <Select
+            name="typologie"
+            label="Typologie"
+            options={typologies}
+            value={echeance?.typologie ?? "NEMO"}
+            disabled
+          />
+
+          <div />
+
+          <DatePicker
+            value={
+              echeance &&
+              parseAbsolute(echeance.date.toISOString(), getLocalTimeZone())
+            }
+            granularity="day"
+            label="Date de début"
+            isDisabled
+          />
+
+          <DatePicker
+            value={
+              echeance &&
+              parseAbsolute(echeance.echeance.toISOString(), getLocalTimeZone())
+            }
+            label="Echéance - Soutenu"
+            granularity="day"
+            isDisabled
+          />
+
+          <TextArea
+            name="objet"
+            value={echeance?.objet ?? ""}
+            label="Objet"
+            rows={8}
+            disabled
+          />
+
+          <Personnels
+            personnels={personnels}
+            disabled
+            onAddPersonnel={() => {
+              return;
+            }}
+            onRemovePersonnel={() => {
+              return;
+            }}
+          />
+        </div>
       </div>
     </Card>
   );

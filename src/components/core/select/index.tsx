@@ -9,6 +9,8 @@ interface SelectFieldProps {
   defaultValue?: string;
   options?: SelectOption[];
   error?: string;
+  value?: string;
+  disabled?: boolean;
 }
 
 interface SelectOption {
@@ -18,7 +20,17 @@ interface SelectOption {
 
 const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
   (
-    { label, name, placeholder = "", defaultValue, options, error, ...props },
+    {
+      label,
+      name,
+      placeholder = "",
+      defaultValue,
+      options,
+      value,
+      error,
+      disabled = false,
+      ...props
+    },
     ref
   ) => (
     <div>
@@ -43,6 +55,8 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
           { "ring-red-500": error }
         )}
         defaultValue={defaultValue}
+        value={value}
+        disabled={disabled}
         placeholder={placeholder}
         autoFocus={error ? true : false}
       >
