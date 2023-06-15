@@ -66,7 +66,7 @@ export default function Appbar() {
                   </svg>
                 </Menu.Button>
                 <Menu.Items className="absolute right-0 mt-12 flex w-56 origin-bottom-right flex-col space-y-1 divide-y divide-gray-100 rounded-md bg-white p-1.5 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <MenuItem>Réglage du compte</MenuItem>
+                  <MenuItem href="/account">Réglage du compte</MenuItem>
                   <MenuItem disabled>Inviter vos amis - bientôt!</MenuItem>
                   <MenuItem onClick={() => void signOut()}>
                     Déconnexion

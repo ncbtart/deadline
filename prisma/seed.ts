@@ -18,6 +18,7 @@ async function main() {
         create: [
           {
             date: new Date(),
+            title: "Echéance 1",
             status: "EN_COURS",
             echeance: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
             reference: "REF-1",
@@ -43,6 +44,7 @@ async function main() {
         create: [
           {
             date: new Date(),
+            title: "Echéance 2",
             status: "EN_COURS",
             echeance: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
             reference: "REF-2",

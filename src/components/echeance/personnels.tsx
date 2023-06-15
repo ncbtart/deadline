@@ -34,16 +34,21 @@ export default function Personnels({
     placement: "right",
   });
 
+  const [active, setActive] = useState("");
+
+  const [search, setSearch] = useState("");
+
   const { data: personnelsDispo } = api.personnel.getAll.useQuery(
     {
       ids: [...personnels.map((personnel) => personnel.id), responsableId],
+      filter: search,
     },
     {
       enabled: !disabled,
+      staleTime: 0 * 1000,
+      keepPreviousData: true,
     }
   );
-
-  const [active, setActive] = useState("");
 
   return (
     <div>
@@ -52,9 +57,9 @@ export default function Personnels({
           "block text-sm font-bold uppercase leading-6 text-gray-900 dark:text-white"
         )}
       >
-        Personnel en copie
+        Personnels en copie
       </label>
-      <div className="mt-6 grid grid-cols-5">
+      <div className="mt-2 grid grid-cols-6">
         {personnels.map((personnel, index: number) => (
           <div
             className={cx("group relative m-2 rounded-full", {
@@ -113,11 +118,13 @@ export default function Personnels({
             ref={setPopperElement}
             style={styles.popper}
             {...attributes.popper}
-            className="flex max-h-60 flex-col  space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5"
+            className="flex max-h-60 w-64 flex-col space-y-1 overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5"
           >
             <input
               className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 focus-within:ring-0 hover:bg-gray-100 hover:text-gray-700 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-800 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 dark:focus:ring-white"
               placeholder="Rechercher un personnel"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
             <div className="overflow-y-auto">

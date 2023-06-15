@@ -1,13 +1,14 @@
-import { type EcheancheWithResponsable } from "@/utils/interface";
+import { type EcheanceWithPersonnel } from "@/utils/interface";
 import { useRouter } from "next/router";
 import { Avatar, TableCell, TableRow } from "@/components/core";
 import { format } from "date-fns";
 import Status from "./status";
 import EcheanceDisplay from "./echeance";
 import { useMemo } from "react";
+import { useSession } from "next-auth/react";
 
 interface EcheanceRowProps {
-  echeance: EcheancheWithResponsable;
+  echeance: EcheanceWithPersonnel;
 }
 
 function calculerPourcentageEcheance(dateDebut: Date, dateFin: Date) {
@@ -75,13 +76,34 @@ function calculerEcheance(dateDebut: Date, dateFin: Date) {
 export function EcheanceRow({ echeance }: EcheanceRowProps) {
   const router = useRouter();
 
-  const pourcentageEcheance = useMemo(
-    () => calculerPourcentageEcheance(echeance.date, echeance.echeance),
-    [echeance.date, echeance.echeance]
-  );
+  const { data: session } = useSession();
+
+  const pourcentageEcheance = useMemo(() => {
+    if (session?.user.id === echeance.responsable.id)
+      return calculerPourcentageEcheance(echeance.date, echeance.echeance);
+
+    if (echeance.datePersonnels)
+      return calculerPourcentageEcheance(
+        echeance.date,
+        echeance.datePersonnels
+      );
+
+    return calculerPourcentageEcheance(echeance.date, echeance.echeance);
+  }, [echeance, session]);
+
+  const status = useMemo(() => {
+    if (session?.user.id === echeance.responsable.id) return echeance?.status;
+
+    if (echeance.datePersonnels)
+      return echeance?.echeancePersonnel.find(
+        (e) => e.personnel.id === session?.user.id
+      )?.status;
+
+    return echeance?.status;
+  }, [echeance, session]);
 
   const severity = useMemo(() => {
-    if (echeance.status === "A_FAIRE") {
+    if (status === "A_FAIRE") {
       if (Number(pourcentageEcheance) === 0) {
         return "green";
       }
@@ -91,7 +113,7 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
       return "red";
     }
 
-    if (echeance.status === "EN_COURS") {
+    if (status === "EN_COURS") {
       if (Number(pourcentageEcheance) < 50) {
         return "green";
       }
@@ -101,22 +123,21 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
       return "yellow";
     }
 
-    if (echeance.status === "TERMINE") {
+    if (status === "TERMINE") {
       return "green";
     }
 
     return "green";
-  }, [echeance.status, pourcentageEcheance]);
+  }, [status, pourcentageEcheance]);
 
   return (
     <>
       <TableRow
         className="cursor-pointer hover:bg-gray-100"
-        onClick={() => void router.push("/echeance/update/" + echeance.id)}
+        onClick={() => void router.push("/echeance/" + echeance.id)}
       >
-        <TableCell>
-          <p className="max-w-xs truncate">{echeance.objet}</p>
-        </TableCell>
+        <TableCell>{echeance.reference}</TableCell>
+
         <TableCell>
           <Avatar
             tooltip
@@ -124,7 +145,9 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
             image={echeance.responsable?.image}
           />
         </TableCell>
-        <TableCell>{echeance.reference}</TableCell>
+        <TableCell>
+          <p className="max-w-xs truncate">{echeance.objet}</p>
+        </TableCell>
         <TableCell>{format(echeance.date, "dd/MM/yy")}</TableCell>
         <TableCell>{echeance.typologie}</TableCell>
         <TableCell>
@@ -135,7 +158,7 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
           />
         </TableCell>
         <TableCell>
-          <Status status={echeance.status} color={severity} />
+          <Status status={status} color={severity} />
         </TableCell>
       </TableRow>
     </>

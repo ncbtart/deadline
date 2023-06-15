@@ -1,11 +1,17 @@
 import Head from "next/head";
+
+import { useState } from "react";
 // import { signIn, signOut, useSession } from "next-auth/react";
 
 // import { api } from "@/utils/api";
 import LoggedLayout from "@/components/layout/private";
 import EcheanceCreate from "@/components/echeance/create";
+import ReponseResponsable from "@/components/echeance/reponseResp";
+import { type EcheanceWithPersonnel } from "@/utils/interface";
 
 const NouvelleEcheance = () => {
+  const [echeance, setEcheance] = useState<EcheanceWithPersonnel>();
+
   return (
     <>
       <Head>
@@ -15,8 +21,14 @@ const NouvelleEcheance = () => {
       </Head>
       <LoggedLayout>
         <div className="flex min-h-screen flex-col content-center items-center justify-center ">
-          <div className="container hidden sm:flex sm:flex-row">
-            <EcheanceCreate title="Nouvelle échéance" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <EcheanceCreate
+              title="Nouvelle échéance"
+              onSuccess={(echeance) => {
+                setEcheance(echeance);
+              }}
+            />
+            {echeance && <ReponseResponsable echeance={echeance} />}
           </div>
         </div>
       </LoggedLayout>

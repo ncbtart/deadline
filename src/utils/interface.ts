@@ -4,7 +4,7 @@ import {
   type EcheancePersonnel,
 } from "@prisma/client";
 
-export type EcheancheWithResponsable = Echeance & {
+export type EcheanceWithResponsable = Echeance & {
   responsable: UserWithoutPassword;
 };
 
@@ -12,7 +12,7 @@ export type EcheancePersonnelWithPersonnel = EcheancePersonnel & {
   personnel: UserWithoutPassword;
 };
 
-export type EcheancheWithPersonnel = Echeance & {
+export type EcheanceWithPersonnel = Echeance & {
   responsable: UserWithoutPassword;
   echeancePersonnel: EcheancePersonnelWithPersonnel[];
 };

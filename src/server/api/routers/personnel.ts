@@ -6,6 +6,7 @@ export const personnelRouter = createTRPCRouter({
     .input(
       z.object({
         ids: z.array(z.string()),
+        filter: z.string().optional(),
       })
     )
     .query(({ input, ctx }) => {
@@ -13,6 +14,9 @@ export const personnelRouter = createTRPCRouter({
         where: {
           id: {
             notIn: input?.ids,
+          },
+          name: {
+            contains: input?.filter,
           },
         },
         select: {

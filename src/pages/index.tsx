@@ -1,12 +1,20 @@
 import Head from "next/head";
 
+import { api } from "@/utils/api";
+import Link from "next/link";
+
+import { type GetServerSidePropsContext } from "next";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import superjson from "superjson";
+import { appRouter } from "@/server/api/root";
+import { prisma } from "@/server/db";
+import { getSession } from "next-auth/react";
+
+import { FolderPlusIcon } from "@heroicons/react/24/outline";
+
 import { Button, Card } from "@/components/core";
 import LoggedLayout from "@/components/layout/private";
-import TableDashboard from "@/components/dashboard";
-import { api } from "@/utils/api";
-
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
+import TableDashboard from "@/components/dashboard/table";
 
 const Home = () => {
   const { data: echeances, status } = api.echeance.findAll.useQuery();
@@ -25,7 +33,7 @@ const Home = () => {
               <div className="h-10 w-10 animate-spin rounded-full border-pink-600"></div>
             </div>
           ) : (
-            <Card className="invisible sm:visible">
+            <Card className="invisible w-3/4 sm:visible">
               <div className="container flex flex-col">
                 {/* Dashboard Header */}
                 <div className="flex items-center gap-4">
@@ -49,8 +57,8 @@ const Home = () => {
                   <Link href="/echeance/nouvelle">
                     <Button rounded>
                       <div className="flex items-center gap-2">
-                        <PlusCircleIcon className="h-6 w-6 text-white sm:h-8 sm:w-8" />
-                        <span>Tache</span>
+                        <FolderPlusIcon className="h-6 w-6" />
+                        <span>Nouvelle tache</span>
                       </div>
                     </Button>
                   </Link>
@@ -74,5 +82,25 @@ const Home = () => {
     </>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: {
+      prisma,
+      session: await getSession(context),
+    },
+    transformer: superjson,
+  });
+
+  await helpers.echeance.findAll.prefetch();
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    },
+  };
+}
+
+Home.auth = true;
 
 export default Home;

@@ -65,6 +65,7 @@ enum Note {
 model Echeance {
     id          String          @id @default(cuid())
     objet       String
+    title       String
     responsable User            @relation(fields: [userId], references: [id])
     reference   String          @unique
     date        DateTime
@@ -72,6 +73,8 @@ model Echeance {
     echeance    DateTime
     status      StatusEcheance? @default(A_FAIRE)
     note        Note
+
+    datePersonnels DateTime?
 
     userId            String
     echeancePersonnel EcheancePersonnel[]
@@ -84,6 +87,10 @@ model EcheancePersonnel {
     personnel   User     @relation(fields: [personnelId], references: [id])
     echeanceId  String
     personnelId String
+
+    status          StatusEcheance? @default(A_FAIRE)
+    message         String?
+    dateRealisation DateTime?
 
     @@id([echeanceId, personnelId])
     @@index([echeanceId])

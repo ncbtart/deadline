@@ -8,7 +8,7 @@ interface TextAreaProps {
   placeholder?: string;
   error?: string;
   rows: number;
-  value: string;
+  value?: string;
   disabled?: boolean;
 }
 

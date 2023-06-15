@@ -3,7 +3,7 @@ import type { StatusEcheance } from "@prisma/client";
 import cx from "classnames";
 
 interface StatusProps {
-  status: StatusEcheance | null;
+  status?: StatusEcheance | null;
   color?: "red" | "yellow" | "green";
 }
 

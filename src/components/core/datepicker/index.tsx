@@ -65,13 +65,17 @@ const DatePicker = (props: DatePickerProps) => {
             <ExclamationTriangleIcon className="absolute right-1 h-6 w-6 text-red-500" />
           )}
         </div>
-        <FieldButton {...buttonProps} isPressed={state.isOpen}>
+        <FieldButton
+          {...buttonProps}
+          isPressed={state.isOpen}
+          isDisabled={props.isDisabled}
+        >
           <CalendarIcon className="h-5 w-5 text-gray-700 group-focus-within:text-gray-700" />
         </FieldButton>
       </div>
 
       {props.error && (
-        <span className="ml-1 mt-1 flex items-center text-xs font-medium tracking-wide text-red-500">
+        <span className="mt-1 flex items-center text-xs font-medium tracking-wide text-red-500">
           {props.error}
         </span>
       )}

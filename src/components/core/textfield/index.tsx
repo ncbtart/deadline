@@ -12,6 +12,7 @@ interface TextFieldProps {
   error?: string;
   value?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -26,11 +27,12 @@ const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
       error,
       value,
       disabled = false,
+      className,
       ...props
     },
     ref
   ) => (
-    <div>
+    <div className={className}>
       {label && (
         <label
           htmlFor={name}

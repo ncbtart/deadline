@@ -1,10 +1,10 @@
 import { Table, TableHead, TableCell, TableBody } from "@/components/core";
 
-import { type EcheancheWithResponsable } from "@/utils/interface";
-import { EcheanceRow } from "./echancerow";
+import { type EcheanceWithPersonnel } from "@/utils/interface";
+import { EcheanceRow } from "./echeanceRow";
 
 interface TableDashboardProps {
-  data?: EcheancheWithResponsable[];
+  data?: EcheanceWithPersonnel[];
   className?: string;
 }
 
@@ -15,9 +15,11 @@ export default function TableDashboard({
   return (
     <Table className={className}>
       <TableHead>
-        <TableCell header>Objet</TableCell>
-        <TableCell header>Responsable</TableCell>
         <TableCell header>Reference</TableCell>
+
+        <TableCell header>Responsable</TableCell>
+        <TableCell header>Objet</TableCell>
+
         <TableCell header>Date</TableCell>
         <TableCell header>Typologie</TableCell>
         <TableCell header>Échéance</TableCell>

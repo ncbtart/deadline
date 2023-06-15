@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { Note, Typologie } from "@prisma/client";
+import { Note, StatusEcheance, Typologie } from "@prisma/client";
 import { z } from "zod";
 
 import Echeances from "@/server/api/models/echeances";
@@ -7,6 +7,28 @@ import Echeances from "@/server/api/models/echeances";
 export const echeanceRouter = createTRPCRouter({
   findAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.echeance.findMany({
+      where: {
+        OR: [
+          {
+            responsable: {
+              id: ctx.session.user.id,
+            },
+          },
+          {
+            echeancePersonnel: {
+              some: {
+                personnelId: ctx.session.user.id,
+              },
+            },
+            datePersonnels: {
+              not: null,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        echeance: "asc",
+      },
       include: {
         responsable: {
           select: {
@@ -14,6 +36,19 @@ export const echeanceRouter = createTRPCRouter({
             name: true,
             email: true,
             image: true,
+          },
+        },
+        echeancePersonnel: {
+          include: {
+            personnel: {
+              select: {
+                id: true,
+                name: true,
+
+                email: true,
+                image: true,
+              },
+            },
           },
         },
       },
@@ -62,7 +97,6 @@ export const echeanceRouter = createTRPCRouter({
         objet: z.string(),
         echeance: z.date(),
         note: z.nativeEnum(Note),
-        personnelsId: z.array(z.string()),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -83,7 +117,6 @@ export const echeanceRouter = createTRPCRouter({
         objet: z.string(),
         echeance: z.date(),
         note: z.nativeEnum(Note),
-        personnelsId: z.array(z.string()),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -92,6 +125,52 @@ export const echeanceRouter = createTRPCRouter({
       return await Echeances(ctx.prisma.echeance).updateEcheance({
         ...input,
         responsableId,
+      });
+    }),
+
+  deleteEcheance: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const responsableId = ctx.session.user.id;
+
+      return await Echeances(ctx.prisma.echeance).deleteEcheance({
+        ...input,
+        responsableId,
+      });
+    }),
+
+  initReponse: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        datePersonnels: z.date(),
+        personnelsId: z.array(z.string()),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const responsableId = ctx.session.user.id;
+
+      return await Echeances(ctx.prisma.echeance).initReponse({
+        ...input,
+        responsableId,
+      });
+    }),
+
+  updateReponse: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        status: z.nativeEnum(StatusEcheance),
+        dateRealisation: z.date().optional(),
+        message: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      return await Echeances(ctx.prisma.echeance).updateReponse({
+        ...input,
+        userId,
       });
     }),
 });
