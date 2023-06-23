@@ -108,7 +108,7 @@ export default function EcheanceCreate({
   };
 
   return (
-    <Card className="invisible sm:visible">
+    <Card className="invisible bg-white sm:visible">
       <div className="container flex flex-col">
         {/* Dashboard Header */}
         <div className="flex items-center gap-4">

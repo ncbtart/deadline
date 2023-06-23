@@ -29,7 +29,7 @@ export default function SuiviPersonnels({ echeance }: SuiviPersonnelsProps) {
     return <></>;
 
   return (
-    <Card className="h-fit">
+    <Card className="h-fit bg-white">
       <div className="container flex flex-col">
         {/* Dashboard Header */}
 

@@ -7,14 +7,14 @@ interface StatusProps {
   color?: "red" | "yellow" | "green";
 }
 
-export default function Status({ status, color }: StatusProps) {
+export default function Status({ status }: StatusProps) {
   return (
     <div className="flex items-center">
       <span
         className={cx("mr-2 h-2 w-2 rounded-full", {
-          "bg-green-500": color === "green",
-          "bg-yellow-300": color === "yellow",
-          "bg-red-500": color === "red",
+          "bg-green-500": status === "TERMINE",
+          "bg-yellow-300": status === "EN_COURS",
+          "bg-red-500": status === "A_FAIRE",
         })}
       ></span>
       <span className="text-sm text-gray-600 dark:text-gray-400">

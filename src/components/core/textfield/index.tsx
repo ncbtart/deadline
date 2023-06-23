@@ -13,6 +13,7 @@ interface TextFieldProps {
   value?: string;
   disabled?: boolean;
   className?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -28,6 +29,7 @@ const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
       value,
       disabled = false,
       className,
+      onChange,
       ...props
     },
     ref
@@ -56,6 +58,7 @@ const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
           type={type}
           value={value}
           disabled={disabled}
+          onChange={onChange}
           id={name}
           className={cx(
             "block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 dark:focus:ring-white sm:text-sm sm:leading-6",

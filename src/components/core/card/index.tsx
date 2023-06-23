@@ -9,7 +9,7 @@ export default function Card({ children, className }: CardProps) {
   return (
     <div
       className={cx(
-        "lg:p-8bg-white before:bot-0 relative flex items-start justify-between overflow-hidden rounded-xl bg-white p-4 shadow-md  dark:bg-gray-600 sm:p-8",
+        "before:bot-0 relative flex items-start justify-between overflow-hidden rounded-xl p-4 shadow-md dark:bg-gray-600  sm:p-8 lg:p-8",
         className
       )}
     >

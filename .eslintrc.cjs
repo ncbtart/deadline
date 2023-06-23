@@ -20,6 +20,7 @@ const config = {
   },
   plugins: ["@typescript-eslint"],
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  ignorePatterns: ["cron/index.js"],
   rules: {
     "@typescript-eslint/consistent-type-imports": [
       "warn",

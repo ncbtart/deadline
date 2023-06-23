@@ -1,3 +1,4 @@
+import type { EcheanceWithPersonnel } from "@/utils/interface";
 import {
   type PrismaClient,
   type Echeance,
@@ -8,6 +9,7 @@ import {
 
 type InputCreateEcheance = {
   date: Date;
+  title: string;
   reference: string;
   typologie: Typologie;
   objet: string;
@@ -49,6 +51,52 @@ type InputUpdateReponse = {
 
 export default function Echeances(prismaEcheance: PrismaClient["echeance"]) {
   return Object.assign(prismaEcheance, {
+    async findById(
+      id: string,
+      responsableId: string
+    ): Promise<EcheanceWithPersonnel | null> {
+      const echeance = await prismaEcheance.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          responsable: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
+          echeancePersonnel: {
+            include: {
+              personnel: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!echeance) throw new Error("Aucune échéance trouvée");
+
+      if (
+        echeance.responsable.id !== responsableId &&
+        !echeance?.echeancePersonnel.find(
+          (echeancePersonnel) =>
+            echeancePersonnel.personnel.id === responsableId
+        )
+      )
+        throw new Error("Vous n'êtes pas autorisé à voir cette échéance");
+
+      return echeance;
+    },
+
     async createEcheance(data: InputCreateEcheance): Promise<Echeance> {
       const checkEcheance = await prismaEcheance.findFirst({
         where: {
@@ -69,6 +117,7 @@ export default function Echeances(prismaEcheance: PrismaClient["echeance"]) {
       return await prismaEcheance.create({
         data: {
           date: data.date,
+          title: data.title,
           reference: data.reference,
           typologie: data.typologie,
           objet: data.objet,

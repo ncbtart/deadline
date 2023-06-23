@@ -15,6 +15,7 @@ export { default as TableHead } from "./datatable/tablehead";
 export { default as TableBody } from "./datatable/tablebody";
 export { default as TableRow } from "./datatable/tablerow";
 export { default as TableCell } from "./datatable/tablecell";
+export { default as Pagination } from "./datatable/pagination";
 
 export { default as Avatar } from "./avatar";
 

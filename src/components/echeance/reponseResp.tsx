@@ -81,7 +81,7 @@ export default function ReponseResponsable({
   return (
     <>
       {isOpen ? (
-        <Card className="invisible h-fit sm:visible">
+        <Card className="invisible h-fit bg-white sm:visible">
           <div className="container flex flex-col">
             {/* Dashboard Header */}
             <div className="flex items-center gap-4">

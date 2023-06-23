@@ -42,7 +42,7 @@ export function EcheanceNoEdit({ echeance }: EcheanceNoEditProps) {
   }, []);
 
   return (
-    <Card className="invisible sm:visible">
+    <Card className="invisible bg-white sm:visible">
       <div className="container flex flex-col">
         {/* Dashboard Header */}
         <div className="flex items-center gap-4">
@@ -78,14 +78,15 @@ export function EcheanceNoEdit({ echeance }: EcheanceNoEditProps) {
         <div className="ml-4 mr-16 mt-8 grid w-[580px] grid-cols-2 gap-6">
           <Textfield
             name="title"
-            value={echeance?.title}
+            className="col-span-2"
+            value={echeance.title}
             label="Titre"
             type="text"
             disabled
           />
           <Textfield
             name="reference"
-            value={echeance?.reference}
+            value={echeance.reference}
             label="Référence"
             type="text"
             disabled
@@ -93,7 +94,7 @@ export function EcheanceNoEdit({ echeance }: EcheanceNoEditProps) {
           <RadioGroup
             name="note"
             classNames="items-end"
-            value={echeance?.note ?? "NEMO"}
+            value={echeance.note || "NEMO"}
             options={notes}
             disabled
           />
@@ -101,7 +102,7 @@ export function EcheanceNoEdit({ echeance }: EcheanceNoEditProps) {
             name="typologie"
             label="Typologie"
             options={typologies}
-            value={echeance?.typologie ?? "NEMO"}
+            value={echeance.typologie || "AUTRE"}
             disabled
           />
 

@@ -4,9 +4,11 @@ import { useSession, signOut } from "next-auth/react";
 
 import { Menu } from "@headlessui/react";
 import { Avatar, MenuItem } from "@/components/core";
+import { api } from "@/utils/api";
 
 export default function Appbar() {
   const { data: session } = useSession();
+  const { data: image } = api.auth.getImage.useQuery();
 
   return (
     <div className="fixed inset-x-0 top-0 z-10 flex h-16 items-center border-b border-gray-200 bg-white shadow-lg">
@@ -40,7 +42,7 @@ export default function Appbar() {
                 >
                   <span className="sr-only">Menu</span>
                   <Avatar
-                    image={session?.user.image as string | null}
+                    image={image as string | null}
                     name={session?.user?.name as string | null}
                   />
 

@@ -12,7 +12,6 @@ import { StatusEcheance } from "@prisma/client";
 import { useMemo, useState } from "react";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
-import { da } from "date-fns/locale";
 
 interface ReponsePersonnelProps {
   echeance?: EcheanceWithPersonnel | null;
@@ -126,7 +125,7 @@ export default function ReponsePersonnel({ echeance }: ReponsePersonnelProps) {
   return (
     <>
       {isOpen ? (
-        <Card className="invisible h-fit sm:visible">
+        <Card className="invisible h-fit bg-white sm:visible">
           <div className="container flex flex-col">
             {/* Dashboard Header */}
             <div className="flex items-center gap-4">

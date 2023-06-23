@@ -1,5 +1,6 @@
-import { Button, Card, Textfield } from "@/components/core";
+import { Avatar, Button, Card, Textfield } from "@/components/core";
 import LoggedLayout from "@/components/layout/private";
+import { api } from "@/utils/api";
 import {
   CloudArrowUpIcon,
   HomeIcon,
@@ -12,8 +13,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Controller, useForm } from "react-hook-form";
-
-import { api } from "@/utils/api";
 
 import { z } from "zod";
 
@@ -37,15 +36,16 @@ const AccountUpdate = z
 type AccountUpdateType = z.infer<typeof AccountUpdate>;
 
 export default function Account() {
-  const { control, handleSubmit, setValue } = useForm<AccountUpdateType>({
+  const [img, setImg] = useState<string>();
+  const ref = useRef<HTMLInputElement>(null);
+
+  const { control, setValue } = useForm<AccountUpdateType>({
     resolver: zodResolver(AccountUpdate),
   });
 
-  const ref = useRef<HTMLInputElement>(null);
-
   const { data: session } = useSession({ required: true });
 
-  const mutationImg = api.auth.uploadImage.useMutation();
+  const utils = api.useContext();
 
   // 2. pass the click event to the hidden input element to trigger the file selection.
   const handleClick = () => {
@@ -54,11 +54,29 @@ export default function Account() {
 
   // 3. convert FileList to File[]
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.currentTarget.files ?? []);
+    const reader = new FileReader();
 
-    if (files[0]) {
-      console.log(files[0]);
-      mutationImg.mutate({ image: files[0] });
+    const file = e.target.files?.[0];
+
+    const formData = new FormData();
+
+    reader.addEventListener("load", () => {
+      if (file) {
+        setImg(reader.result as string);
+      }
+    });
+
+    if (file) {
+      formData.append("image", file);
+      fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then(async () => {
+          reader.readAsDataURL(file);
+          await utils.auth.getImage.invalidate();
+        })
+        .catch((e) => console.log(e));
     }
   };
 
@@ -78,7 +96,7 @@ export default function Account() {
       </Head>
       <LoggedLayout>
         <div className="flex min-h-screen flex-col content-center items-center justify-center ">
-          <Card className="invisible sm:visible">
+          <Card className="invisible mt-6 bg-white sm:visible">
             <div className="container flex flex-col">
               {/* Dashboard Header */}
               <div className="flex items-center gap-4">
@@ -100,18 +118,28 @@ export default function Account() {
 
               <div className="mt-12 flex flex-col  items-center justify-evenly text-pink-600">
                 <div>
-                  <div
-                    className="flex cursor-pointer flex-col items-center gap-2 rounded-full p-4  hover:bg-rose-100"
-                    onClick={handleClick}
-                  >
-                    <CloudArrowUpIcon className="h-6 w-6" />
-                    <input
-                      type="file"
-                      ref={ref}
-                      className="hidden"
-                      onChange={handleChange}
-                    />
-                  </div>
+                  {img ? (
+                    <div
+                      className="flex cursor-pointer flex-col items-center gap-2 rounded-full p-4"
+                      onClick={handleClick}
+                    >
+                      <Avatar image={img} />
+                    </div>
+                  ) : (
+                    <div
+                      className="flex cursor-pointer flex-col items-center gap-2 rounded-full p-4  hover:bg-rose-100"
+                      onClick={handleClick}
+                    >
+                      <CloudArrowUpIcon className="h-6 w-6" />
+                    </div>
+                  )}
+                  <input
+                    accept="image/*"
+                    type="file"
+                    ref={ref}
+                    className="hidden"
+                    onChange={handleChange}
+                  />
                 </div>
                 <span>Importer une nouvelle image</span>
               </div>

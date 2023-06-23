@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 interface AvatarProps {
   name?: string | null;
   image?: string | null;
@@ -18,16 +16,18 @@ export default function Avatar({
   return (
     <div className="group relative flex">
       {image ? (
-        <Image
-          alt={`img ${name ?? "responsable"}`}
-          src={image}
-          className={cx(
-            "bg-2 m-auto h-10 w-10 rounded-full bg-white object-cover shadow-md",
-            className
-          )}
-          width={40}
-          height={40}
-        />
+        <picture>
+          <img
+            alt={`img ${name ?? "responsable"}`}
+            src={image}
+            className={cx(
+              "bg-2 m-auto h-10 w-10 rounded-full bg-white object-cover shadow-md",
+              className
+            )}
+            width={40}
+            height={40}
+          />
+        </picture>
       ) : (
         <div className="m-auto flex h-10 w-10  items-center justify-center rounded-full bg-rose-500 shadow-md">
           <div className="font-bold text-white">{name?.[0]}</div>

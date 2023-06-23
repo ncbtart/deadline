@@ -125,7 +125,7 @@ export default function EcheanceUpdate({ echeance }: EcheanceMainProps) {
   };
 
   return (
-    <Card className="invisible sm:visible">
+    <Card className="invisible bg-white sm:visible">
       <div className="container flex flex-col">
         {/* Dashboard Header */}
         <div className="flex items-center gap-4">
@@ -160,7 +160,7 @@ export default function EcheanceUpdate({ echeance }: EcheanceMainProps) {
             <Controller
               control={control}
               name="title"
-              defaultValue={""}
+              defaultValue={echeance?.title ?? ""}
               render={({ field, fieldState: { error } }) => (
                 <Textfield
                   {...field}

@@ -10,14 +10,55 @@ import { appRouter } from "@/server/api/root";
 import { prisma } from "@/server/db";
 import { getSession } from "next-auth/react";
 
-import { FolderPlusIcon } from "@heroicons/react/24/outline";
+import {
+  FireIcon,
+  FolderPlusIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
-import { Button, Card } from "@/components/core";
+import { Button, Card, Pagination, Textfield } from "@/components/core";
 import LoggedLayout from "@/components/layout/private";
 import TableDashboard from "@/components/dashboard/table";
+import { useState } from "react";
+
+interface Sort {
+  name: string;
+  order: "asc" | "desc";
+}
 
 const Home = () => {
-  const { data: echeances, status } = api.echeance.findAll.useQuery();
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<Sort>();
+
+  const [page, setPage] = useState(1);
+
+  const { data: echeances, status } = api.echeance.findAll.useQuery(
+    {
+      filter: search,
+      sort,
+      page,
+    },
+    {
+      staleTime: 0 * 1000,
+      keepPreviousData: true,
+    }
+  );
+
+  const handleSort = (name: string) => {
+    if (sort?.name === name) {
+      setSort({
+        name,
+        order: sort.order === "asc" ? "desc" : "asc",
+      });
+    } else {
+      setSort({
+        name,
+        order: "asc",
+      });
+    }
+  };
+
+  console.log(echeances?.totalPages);
 
   return (
     <>
@@ -33,7 +74,7 @@ const Home = () => {
               <div className="h-10 w-10 animate-spin rounded-full border-pink-600"></div>
             </div>
           ) : (
-            <Card className="invisible w-3/4 sm:visible">
+            <Card className="invisible w-3/4 bg-white sm:visible">
               <div className="container flex flex-col">
                 {/* Dashboard Header */}
                 <div className="flex items-center gap-4">
@@ -63,17 +104,50 @@ const Home = () => {
                     </Button>
                   </Link>
                 </div>
-                {/* Dashboard Card */}
-                <Card className="mt-4 px-8">
-                  <div className="container flex flex-col">
-                    <>
+                {echeances && echeances.data.length === 0 && !search ? (
+                  <Card className="mt-4 flex flex-col items-center border-2 bg-gray-50 px-8">
+                    <div className="my-8 flex flex-col items-center justify-center gap-2">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-rose-400">
+                        <FireIcon className="h-8 w-8 rounded-full" />
+                      </div>
+                      <h5 className="text-md font-bold sm:text-lg">
+                        Vous n&apos;avez aucune tâche
+                      </h5>
+                      <p className="text-center text-sm">
+                        Vous pouvez en créer une en cliquant sur le bouton
+                        ci-dessus !
+                      </p>
+                    </div>
+                  </Card>
+                ) : (
+                  <Card className="mt-4 flex flex-col border-2 bg-white px-8">
+                    <div className="flex w-full flex-row">
                       <h5 className="text-md font-medium sm:text-lg">
                         Liste des tâches
                       </h5>
-                      <TableDashboard className="mt-6" data={echeances} />
-                    </>
-                  </div>
-                </Card>
+                      <div className="flex-grow"></div>
+                      <Textfield
+                        name="search"
+                        type="text"
+                        placeholder="Rechercher..."
+                        onChange={(e) => setSearch(e.target.value)}
+                        startIcon={<MagnifyingGlassIcon className="h-4 w-4" />}
+                      />
+                    </div>
+                    <div className="container flex flex-col">
+                      <TableDashboard
+                        className="mt-6"
+                        data={echeances?.data}
+                        onSort={(name) => handleSort(name)}
+                      />
+                      <Pagination
+                        currentPage={page}
+                        onPageChange={(page) => setPage(page)}
+                        totalPages={echeances?.totalPages}
+                      />
+                    </div>
+                  </Card>
+                )}
               </div>
             </Card>
           )}
@@ -93,7 +167,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     transformer: superjson,
   });
 
-  await helpers.echeance.findAll.prefetch();
+  await helpers.echeance.findAll.prefetch({
+    filter: "",
+  });
   return {
     props: {
       trpcState: helpers.dehydrate(),

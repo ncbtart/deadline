@@ -62,8 +62,8 @@ export default function Personnels({
       <div className="mt-2 grid grid-cols-6">
         {personnels.map((personnel, index: number) => (
           <div
-            className={cx("group relative m-2 rounded-full", {
-              "ring-2 ring-pink-500": active === personnel.id,
+            className={cx("group relative m-2 h-10 w-10 rounded-full", {
+              "ring-4 ring-rose-500": active === personnel.id,
             })}
             key={index}
             role="button"
@@ -108,7 +108,7 @@ export default function Personnels({
         <Popover>
           <Popover.Button
             ref={setReferenceElement}
-            className="m-2 inline-flex h-8 w-8 items-center justify-center rounded-full text-pink-500 transition duration-150 ease-in-out hover:text-pink-800"
+            className="m-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-rose-500 transition duration-150 ease-in-out hover:text-pink-800"
             disabled={disabled}
           >
             <span className="sr-only">Ajouter</span>

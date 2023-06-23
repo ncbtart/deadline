@@ -7,9 +7,6 @@ import {
 import { z } from "zod";
 import Users from "@/server/api/models/users";
 
-const MAX_FILE_SIZE = 500000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-
 export const authRouter = createTRPCRouter({
   signup: publicProcedure
     .input(
@@ -33,26 +30,15 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return await Users(ctx.prisma.user).signup(input);
     }),
-  uploadImage: protectedProcedure
-    .input(
-      z.object({
-        image: z
-          .instanceof(File)
-          .refine((file: File) => {
-            if (!file || !file.size) return false;
-            return file.size >= MAX_FILE_SIZE;
-          }, "Image is too large.") // this should be greater than or equals (>=) not less that or equals (<=)
-          .refine((file) => {
-            if (!file || !file.type) return false;
-            return ACCEPTED_IMAGE_TYPES.includes(file.type);
-          }, ".jpg, .jpeg, .png and .webp files are accepted."),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const responsableId = ctx.session.user.id;
+  getImage: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+    });
 
-      console.log(input);
+    if (!user) throw new Error("User not found.");
 
-      return await Users(ctx.prisma.user).uploadImage(input, responsableId);
-    }),
+    return user.image;
+  }),
 });

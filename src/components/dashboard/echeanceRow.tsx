@@ -78,19 +78,6 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
 
   const { data: session } = useSession();
 
-  const pourcentageEcheance = useMemo(() => {
-    if (session?.user.id === echeance.responsable.id)
-      return calculerPourcentageEcheance(echeance.date, echeance.echeance);
-
-    if (echeance.datePersonnels)
-      return calculerPourcentageEcheance(
-        echeance.date,
-        echeance.datePersonnels
-      );
-
-    return calculerPourcentageEcheance(echeance.date, echeance.echeance);
-  }, [echeance, session]);
-
   const status = useMemo(() => {
     if (session?.user.id === echeance.responsable.id) return echeance?.status;
 
@@ -102,42 +89,15 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
     return echeance?.status;
   }, [echeance, session]);
 
-  const severity = useMemo(() => {
-    if (status === "A_FAIRE") {
-      if (Number(pourcentageEcheance) === 0) {
-        return "green";
-      }
-      if (Number(pourcentageEcheance) < 75) {
-        return "yellow";
-      }
-      return "red";
-    }
-
-    if (status === "EN_COURS") {
-      if (Number(pourcentageEcheance) < 50) {
-        return "green";
-      }
-      if (Number(pourcentageEcheance) >= 100) {
-        return "red";
-      }
-      return "yellow";
-    }
-
-    if (status === "TERMINE") {
-      return "green";
-    }
-
-    return "green";
-  }, [status, pourcentageEcheance]);
-
   return (
     <>
       <TableRow
         className="cursor-pointer hover:bg-gray-100"
         onClick={() => void router.push("/echeance/" + echeance.id)}
       >
-        <TableCell>{echeance.reference}</TableCell>
-
+        <TableCell>
+          <p className="max-w-xs truncate">{echeance.title}</p>
+        </TableCell>
         <TableCell>
           <Avatar
             tooltip
@@ -145,20 +105,35 @@ export function EcheanceRow({ echeance }: EcheanceRowProps) {
             image={echeance.responsable?.image}
           />
         </TableCell>
-        <TableCell>
-          <p className="max-w-xs truncate">{echeance.objet}</p>
-        </TableCell>
+        <TableCell>{echeance.reference}</TableCell>
         <TableCell>{format(echeance.date, "dd/MM/yy")}</TableCell>
         <TableCell>{echeance.typologie}</TableCell>
         <TableCell>
-          <EcheanceDisplay
-            message={calculerEcheance(echeance.date, echeance.echeance)}
-            pourcentage={pourcentageEcheance}
-            color={severity}
-          />
+          {session?.user.id === echeance.responsable.id && (
+            <EcheanceDisplay
+              message={calculerEcheance(echeance.date, echeance.echeance)}
+              pourcentage={calculerPourcentageEcheance(
+                echeance.date,
+                echeance.echeance
+              )}
+              status={status}
+            />
+          )}
         </TableCell>
         <TableCell>
-          <Status status={status} color={severity} />
+          {echeance.datePersonnels && (
+            <EcheanceDisplay
+              message={calculerEcheance(echeance.date, echeance.datePersonnels)}
+              pourcentage={calculerPourcentageEcheance(
+                echeance.date,
+                echeance.datePersonnels
+              )}
+              status={status}
+            />
+          )}
+        </TableCell>
+        <TableCell>
+          <Status status={status} />
         </TableCell>
       </TableRow>
     </>

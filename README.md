@@ -23,6 +23,11 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 
 You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
 
-## How do I deploy this?
+## Using Docker
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. [Install Docker](https://docs.docker.com/get-docker/) on your machine.
+1. Build your container: `docker build -t deadline-nextjs --build-arg NEXT_PUBLIC_CLIENTVAR=clientvar .`.
+1. Start your MariaDb container: `docker run --detach --network some-network --name deadline-mariadb --env MARIADB_USER=deadline --env MARIADB_PASSWORD=deadline --env MARIADB_ROOT_PASSWORD=deadline  mariadb:latest`.
+1. Run your container: `docker run -p 3000:3000 -e DATABASE_URL="mysql://deadline:deadline@localhost:3306/deadline"  deadline-nextjs`.
+
+You can view your images created with `docker images`.

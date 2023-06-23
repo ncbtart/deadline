@@ -5,64 +5,155 @@ import { z } from "zod";
 import Echeances from "@/server/api/models/echeances";
 
 export const echeanceRouter = createTRPCRouter({
-  findAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.echeance.findMany({
-      where: {
-        OR: [
-          {
-            responsable: {
-              id: ctx.session.user.id,
-            },
-          },
-          {
-            echeancePersonnel: {
-              some: {
-                personnelId: ctx.session.user.id,
-              },
-            },
-            datePersonnels: {
-              not: null,
-            },
-          },
-        ],
-      },
-      orderBy: {
-        echeance: "asc",
-      },
-      include: {
-        responsable: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            image: true,
-          },
-        },
-        echeancePersonnel: {
-          include: {
-            personnel: {
-              select: {
-                id: true,
-                name: true,
-
-                email: true,
-                image: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }),
-  findById: protectedProcedure
-    .input(z.object({ id: z.string() }))
+  findAll: protectedProcedure
+    .input(
+      z.object({
+        filter: z.string().optional(),
+        sort: z
+          .object({
+            name: z.string(),
+            order: z.enum(["asc", "desc"]),
+          })
+          .optional(),
+        page: z.number().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
-      if (!input) throw new Error("Aucune échéance trouvée");
+      let orderBy;
+      let skip = 0;
 
-      return await ctx.prisma.echeance.findUnique({
+      const take = 10;
+
+      if (input?.sort)
+        if (input?.sort?.name === "responsable") {
+          orderBy = {
+            responsable: {
+              name: input?.sort?.order,
+            },
+          };
+        } else {
+          orderBy = {
+            [input?.sort?.name]: input?.sort?.order,
+          };
+        }
+
+      if (input?.page) {
+        skip = input?.page * take - take;
+      }
+
+      const total = await ctx.prisma.echeance.count({
         where: {
-          id: input.id,
+          OR: [
+            {
+              responsable: {
+                id: ctx.session.user.id,
+              },
+            },
+            {
+              echeancePersonnel: {
+                some: {
+                  personnelId: ctx.session.user.id,
+                },
+              },
+              datePersonnels: {
+                not: null,
+              },
+            },
+          ],
+          AND: [
+            {
+              OR: [
+                {
+                  title: {
+                    contains: input?.filter,
+                  },
+                },
+                {
+                  reference: {
+                    contains: input?.filter,
+                  },
+                },
+                {
+                  responsable: {
+                    name: {
+                      contains: input?.filter,
+                    },
+                  },
+                },
+                {
+                  echeancePersonnel: {
+                    some: {
+                      personnel: {
+                        name: {
+                          contains: input?.filter,
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
         },
+      });
+
+      const data = await ctx.prisma.echeance.findMany({
+        take,
+        skip,
+        where: {
+          OR: [
+            {
+              responsable: {
+                id: ctx.session.user.id,
+              },
+            },
+            {
+              echeancePersonnel: {
+                some: {
+                  personnelId: ctx.session.user.id,
+                },
+              },
+              datePersonnels: {
+                not: null,
+              },
+            },
+          ],
+          AND: [
+            {
+              OR: [
+                {
+                  title: {
+                    contains: input?.filter,
+                  },
+                },
+                {
+                  reference: {
+                    contains: input?.filter,
+                  },
+                },
+                {
+                  responsable: {
+                    name: {
+                      contains: input?.filter,
+                    },
+                  },
+                },
+                {
+                  echeancePersonnel: {
+                    some: {
+                      personnel: {
+                        name: {
+                          contains: input?.filter,
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        orderBy,
         include: {
           responsable: {
             select: {
@@ -78,6 +169,7 @@ export const echeanceRouter = createTRPCRouter({
                 select: {
                   id: true,
                   name: true,
+
                   email: true,
                   image: true,
                 },
@@ -86,12 +178,28 @@ export const echeanceRouter = createTRPCRouter({
           },
         },
       });
+
+      return {
+        totalPages: Math.ceil(total / take),
+        data,
+      };
+    }),
+  findById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!input) throw new Error("Aucune échéance trouvée");
+
+      return await Echeances(ctx.prisma.echeance).findById(
+        input.id,
+        ctx.session.user.id
+      );
     }),
 
   createEcheance: protectedProcedure
     .input(
       z.object({
         date: z.date(),
+        title: z.string(),
         reference: z.string(),
         typologie: z.nativeEnum(Typologie),
         objet: z.string(),
