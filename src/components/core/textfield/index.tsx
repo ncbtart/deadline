@@ -10,11 +10,31 @@ interface TextFieldProps {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   error?: string;
+  value?: string;
+  disabled?: boolean;
+  className?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
-  ({ label, name, type, placeholder = "", startIcon, endIcon, error }, ref) => (
-    <div>
+  (
+    {
+      label,
+      name,
+      type,
+      placeholder = "",
+      startIcon,
+      endIcon,
+      error,
+      value,
+      disabled = false,
+      className,
+      onChange,
+      ...props
+    },
+    ref
+  ) => (
+    <div className={className}>
       {label && (
         <label
           htmlFor={name}
@@ -28,24 +48,29 @@ const Textfield = forwardRef<HTMLInputElement, TextFieldProps>(
       )}
       <div className="relative mt-2 rounded-md shadow-sm">
         {startIcon && (
-          <span className="pointer-events-none absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-900 dark:text-gray-200">
+          <span className="pointer-events-none absolute inset-y-0 start-0 grid w-10 place-content-center text-gray-500 dark:text-gray-200">
             {startIcon}
           </span>
         )}
         <input
           ref={ref}
+          {...props}
           type={type}
-          name={name}
+          value={value}
+          disabled={disabled}
+          onChange={onChange}
           id={name}
           className={cx(
             "block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 dark:focus:ring-white sm:text-sm sm:leading-6",
-            { "ring-red-500": error }
+            { "ring-red-500": error },
+            { "pl-10": startIcon },
+            { "pr-10": endIcon }
           )}
           placeholder={placeholder}
           autoFocus={error ? true : false}
         />
         {endIcon && (
-          <span className="pointer-events-none absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-900 dark:text-gray-200">
+          <span className="pointer-events-none absolute inset-y-0 end-0 grid w-10 place-content-center text-gray-500 dark:text-gray-200">
             {endIcon}
           </span>
         )}

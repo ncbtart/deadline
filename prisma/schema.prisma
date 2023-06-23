@@ -6,18 +6,9 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
-}
-
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 // Necessary for Next auth
@@ -37,6 +28,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -45,16 +37,77 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+enum Typologie {
+    INFRASTRUCTURE
+    RH
+    FINANCE
+    JURIDIQUE
+    COMMUNICATION
+    INFORMATIQUE
+    AUTRE
+}
+
+enum StatusEcheance {
+    A_FAIRE
+    EN_COURS
+    TERMINE
+}
+
+enum Note {
+    NEMO
+    MAIL
+}
+
+model Echeance {
+    id          String          @id @default(cuid())
+    objet       String
+    title       String
+    responsable User            @relation(fields: [userId], references: [id])
+    reference   String          @unique
+    date        DateTime
+    typologie   Typologie
+    echeance    DateTime
+    status      StatusEcheance? @default(A_FAIRE)
+    note        Note
+
+    datePersonnels DateTime?
+
+    userId            String
+    echeancePersonnel EcheancePersonnel[]
+
+    @@index([userId])
+}
+
+model EcheancePersonnel {
+    echeance    Echeance @relation(fields: [echeanceId], references: [id])
+    personnel   User     @relation(fields: [personnelId], references: [id])
+    echeanceId  String
+    personnelId String
+
+    status          StatusEcheance? @default(A_FAIRE)
+    message         String?
+    dateRealisation DateTime?
+
+    @@id([echeanceId, personnelId])
+    @@index([echeanceId])
+    @@index([personnelId])
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+    id                String              @id @default(cuid())
+    name              String?
+    password          String?
+    email             String?             @unique
+    emailVerified     DateTime?
+    image             String?
+    accounts          Account[]
+    sessions          Session[]
+    echeances         Echeance[]
+    echeancePersonnel EcheancePersonnel[]
 }
 
 model VerificationToken {

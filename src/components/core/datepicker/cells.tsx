@@ -54,7 +54,7 @@ export function CalendarCell({ state, date }: CalendarCellProps) {
           isSelected
             ? isInvalid
               ? "rounded-full bg-red-300"
-              : "rounded-full bg-violet-300 "
+              : "rounded-full bg-pink-300 "
             : ""
         } ${isDisabled ? "disabled" : ""}`}
       >
@@ -64,11 +64,11 @@ export function CalendarCell({ state, date }: CalendarCellProps) {
           } ${
             // Focus ring, visible while the cell has keyboard focus.
             isFocusVisible
-              ? "group-focus:z-2 ring-2 ring-violet-600 ring-offset-2"
+              ? "group-focus:z-2 ring-2 ring-pink-600 ring-offset-2"
               : ""
           }${
             // Hover state for non-selected cells.
-            !isSelected && !isDisabled ? "hover:bg-violet-100" : ""
+            !isSelected && !isDisabled ? "hover:bg-pink-100" : ""
           } cursor-default`}
         >
           {formattedDate}

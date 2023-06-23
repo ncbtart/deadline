@@ -7,10 +7,25 @@ interface TextAreaProps {
   name: string;
   placeholder?: string;
   error?: string;
+  rows: number;
+  value?: string;
+  disabled?: boolean;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ label, name, placeholder = "", error }, ref) => (
+  (
+    {
+      label,
+      name,
+      placeholder = "",
+      rows,
+      error,
+      value,
+      disabled = false,
+      ...props
+    },
+    ref
+  ) => (
     <div>
       {label && (
         <label
@@ -27,10 +42,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         <textarea
           ref={ref}
           name={name}
-          rows={8}
+          rows={rows}
+          value={value}
+          disabled={disabled}
           id={name}
+          {...props}
           className={cx(
-            "block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 dark:focus:ring-white sm:text-sm sm:leading-6",
+            "block h-40 w-full resize-none rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 dark:focus:ring-white sm:text-sm sm:leading-6",
             { "ring-red-500": error }
           )}
           placeholder={placeholder}

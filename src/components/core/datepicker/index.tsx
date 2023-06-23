@@ -11,6 +11,7 @@ import {
   CalendarIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
+
 import { FieldButton } from "./button";
 import { Popover } from "./popover";
 import { Dialog } from "./dialog";
@@ -20,7 +21,11 @@ import cx from "classnames";
 
 import DateField from "./datefield";
 
-const DatePicker = (props: AriaDatePickerProps<DateValue>) => {
+interface DatePickerProps extends AriaDatePickerProps<DateValue> {
+  error?: string;
+}
+
+const DatePicker = (props: DatePickerProps) => {
   const state = useDatePickerState(props);
   const ref = useRef(null);
 
@@ -41,24 +46,40 @@ const DatePicker = (props: AriaDatePickerProps<DateValue>) => {
       >
         {props.label}
       </span>
-      <div {...groupProps} ref={ref} className="group mt-2 flex">
+      <div
+        {...groupProps}
+        ref={ref}
+        className="group mt-2 flex justify-between"
+      >
         <div
           className={cx(
-            "relative flex items-center rounded-l-md border border-gray-300 bg-white p-1 pr-10 transition-colors group-focus-within:border-2 group-focus-within:border-gray-600 group-hover:border-gray-400 group-focus-within:group-hover:border-gray-600",
+            "relative flex w-full items-center rounded-l-md border border-gray-300 bg-white p-1 pr-10 transition-colors group-focus-within:border-2 group-focus-within:border-gray-600 group-hover:border-gray-400 group-focus-within:group-hover:border-gray-600",
             {
               "border-2 border-red-500": state.validationState === "invalid",
-            }
+            },
+            { "border-2 border-gray-600": state.isOpen }
           )}
         >
-          <DateField {...fieldProps} />
+          <DateField {...fieldProps} autoFocus={state.isOpen} />
           {state.validationState === "invalid" && (
             <ExclamationTriangleIcon className="absolute right-1 h-6 w-6 text-red-500" />
           )}
         </div>
-        <FieldButton {...buttonProps} isPressed={state.isOpen}>
+        <FieldButton
+          {...buttonProps}
+          isPressed={state.isOpen}
+          isDisabled={props.isDisabled}
+        >
           <CalendarIcon className="h-5 w-5 text-gray-700 group-focus-within:text-gray-700" />
         </FieldButton>
       </div>
+
+      {props.error && (
+        <span className="mt-1 flex items-center text-xs font-medium tracking-wide text-red-500">
+          {props.error}
+        </span>
+      )}
+
       {state.isOpen && (
         <Popover triggerRef={ref} state={state} placement="bottom start">
           <Dialog {...dialogProps}>
