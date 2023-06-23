@@ -64,15 +64,15 @@ export default async function handler(
 
         try {
           // Crée un nouveau blob à partir du fichier image
-          const blob = await createBlob(image[0].path);
+          // const blob = await createBlob(image[0].path);
 
           // Définit le chemin de destination dans Vercel Blob
-          const newPath = `public/img/profile/${session.user.id}.${
-            extension || "png"
-          }`;
+          // const newPath = `public/img/profile/${session.user.id}.${
+          //   extension || "png"
+          // }`;
 
           // Déplace le blob vers le nouveau chemin d'accès avec le nouveau nom
-          await blob.moveTo(newPath);
+          // await blob.moveTo(newPath);
 
           await prisma.user.update({
             where: {
